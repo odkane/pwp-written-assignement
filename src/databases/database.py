@@ -44,8 +44,8 @@ def create_table_sql(table_name: str, no_columns: int) -> str:
             {}
             ); """.format(table_name, ', '.join(columns))
 
-def create_tables():
-    database = r"task_database.db"
+def create_tables(db_name: str):
+    database = rf'{db_name}'
 
     test_table_sql = create_table_sql("test", 1)
     train_table_sql = create_table_sql("train", 4)

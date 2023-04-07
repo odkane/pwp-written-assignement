@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 
 from databases.orm import Ideal, Test, Train
 
-
-db_path= Path('task_database.db').absolute()
+db_name = 'task_database1.db'
+db_path= Path(db_name).absolute()
 engine =  create_engine(rf"sqlite:///{db_path}")
 
 def create_session() -> Session:
