@@ -1,3 +1,6 @@
+from pathlib import Path
+import pandas as pd
+import sqlalchemy as orm
 from sqlalchemy import create_engine, func, select, insert
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 from sqlalchemy.types import Float
@@ -80,5 +83,7 @@ class Ideal(Base):
     y49: Mapped[float] = mapped_column(Float(), nullable=False)
     y50: Mapped[float] = mapped_column(Float(), nullable=False)
 
-    
+
+
+
     
