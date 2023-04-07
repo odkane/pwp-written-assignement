@@ -31,10 +31,6 @@ def create_table(conn: Connection, create_table_sql: str):
     except Error as e:
         print(e)
 
-    
-def insert_into_table(conn: Connection, table_name: str, values):
-    pass
-
 
 def create_table_sql(table_name: str, no_columns: int) -> str:
     columns = ['y{} FLOAT'.format(i+1) for i in range(no_columns)] if no_columns > 1 else ['y FLOAT']
@@ -43,6 +39,7 @@ def create_table_sql(table_name: str, no_columns: int) -> str:
             x float PRIMARY KEY,
             {}
             ); """.format(table_name, ', '.join(columns))
+
 
 def create_tables(db_name: str):
     database = rf'{db_name}'

@@ -1,15 +1,17 @@
+from dataclasses import dataclass
 from pathlib import Path
 import pandas as pd
 import sqlalchemy as orm
-from sqlalchemy import create_engine, func, select, insert
+from sqlalchemy import Engine, create_engine, func, select, insert
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 from sqlalchemy.types import Float
 
 
 # declarative base class
+
 class Base(DeclarativeBase):
     pass
-
+    
 # an example mapping using the base
 class Test(Base):
     __tablename__ = "test"
@@ -17,6 +19,7 @@ class Test(Base):
     x: Mapped[float] = mapped_column(Float(), primary_key=True, nullable=False)
     y: Mapped[float] = mapped_column(Float(), nullable=False)
     
+
 
 class Train(Base):
     __tablename__ = "train"
