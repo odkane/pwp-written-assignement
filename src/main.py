@@ -1,19 +1,16 @@
+import json
 from pathlib import Path
-from databases.database import create_tables
 import pandas as pd
-from sqlalchemy import create_engine, select
-from sqlalchemy.orm import Session
+from databases.database import create_tables
+from sqlalchemy import create_engine
 
 from databases.orm import Ideal, Test, Train
 from services.database_service import DatabaseService
-from utils.util import find_ideal
+from utils.util import find_ideal, find_test_ideal
 
 db_name = 'task_database.db'
 db_path= Path(db_name).absolute()
 engine =  create_engine(rf"sqlite:///{db_path}")
-
-def create_session() -> Session:
-    return Session(engine)
     
 
 if __name__ == '__main__':
@@ -24,6 +21,11 @@ if __name__ == '__main__':
     df_train = db_service.get_data_from_table(Train)
     df_ideal = db_service.get_data_from_table(Ideal)
 
-    result = find_ideal(df_train['y1'],df_ideal)
+    train_ideals = {}
+    for col in df_train.loc[:, df_train.columns != 'x'].columns:
+        train_ideals[col] = find_ideal(df_train[col],df_ideal)
 
-    print(result)
+    df_test = find_test_ideal(train_ideals)
+    
+    print(json.dumps(train_ideals, indent=4))
+    print(df_test.head())

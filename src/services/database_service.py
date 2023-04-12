@@ -16,7 +16,7 @@ class DatabaseService:
         
     def insert_from_file(self, filename:str, table:Base) -> None:
         df = pd.read_csv(rf'src/resources/{filename}')
-        df_as_dict = df.head(15).to_dict('records')
+        df_as_dict = df.to_dict('records')
  #       print(df.iloc[:20].sort_values('x'))
  #       print(json.dumps(df_as_dict, indent=4))
         self.insert_in_table(table=table, values=df_as_dict)

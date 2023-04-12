@@ -1,11 +1,7 @@
-from dataclasses import dataclass
-from pathlib import Path
-import pandas as pd
-import sqlalchemy as orm
-from sqlalchemy import Engine, create_engine, func, select, insert
-from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
-from sqlalchemy.types import Float
 
+from sqlalchemy import String
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.types import Float
 
 # declarative base class
 
@@ -18,7 +14,8 @@ class Test(Base):
 
     x: Mapped[float] = mapped_column(Float(), primary_key=True, nullable=False)
     y: Mapped[float] = mapped_column(Float(), nullable=False)
-    
+    delta_y: Mapped[float] = mapped_column(Float(), nullable=False)
+    ideal: Mapped[str] = mapped_column(String(), nullable=False)
 
 
 class Train(Base):
