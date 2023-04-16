@@ -22,10 +22,16 @@ if __name__ == '__main__':
     df_ideal = db_service.get_data_from_table(Ideal)
 
     train_ideals = {}
+    ideals=[]
     for col in df_train.loc[:, df_train.columns != 'x'].columns:
-        train_ideals[col] = find_ideal(df_train[col],df_ideal)
-
-    df_test = find_test_ideal(train_ideals)
+        ideal = find_ideal(df_train[col],df_ideal)
+        ideals.append(ideal)
+        train_ideals[col] = ideal.get('ideal')
     
+
+    test_result = find_test_ideal(ideals, df_ideals=df_ideal)
+
+    # test_result.to_csv('result.csv')
+    print(ideals)
     print(json.dumps(train_ideals, indent=4))
-    print(df_test.head())
+    print(test_result)

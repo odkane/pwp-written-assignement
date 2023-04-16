@@ -1,5 +1,8 @@
+import math
 import pandas as pd
 from pandas import DataFrame
+
+FACTOR = math.sqrt(2)
 
 def find_ideal(train_column: DataFrame, ideal: DataFrame) -> dict:
    ideal= ideal.loc[:, ideal.columns != 'x']
@@ -14,6 +17,35 @@ def find_ideal(train_column: DataFrame, ideal: DataFrame) -> dict:
 
    return result
 
-def find_test_ideal(ideals) -> DataFrame:
+def find_test_ideal(ideals: list[dict], df_ideals: DataFrame) -> DataFrame:
     df_test = pd.read_csv('src/resources/test.csv')
+     
+    deviations = pd.DataFrame()
+    ideal_max_deviations = []
+    ideals_lst = []
+    deviations['x'] = df_test['x']
+    
+    for ideal in ideals:
+        ideal_col= ideal.get('ideal')
+        ideal_max_deviations.append((ideal.get('deviation'))* FACTOR)
+        ideals_lst.append(ideal_col)
+
+        merged_df = df_test.merge(df_ideals[['x',ideal_col]], on='x')
+        deviations[ideal_col] = (merged_df['y'] - merged_df[ideal_col]).abs()
+    
+    deviations['max'] = deviations.loc[:, deviations.columns != 'x'].max(axis=1)
+    deviations['ideal_col_max'] = deviations.loc[:, deviations.columns != 'x'].idxmax(axis=1)
+
+    tmp = {}
+    tmp['ideal_deviation_max'] = ideal_max_deviations
+    tmp['ideal_col_max'] = ideals_lst 
+
+    df_tmp = pd.DataFrame(tmp)
+    deviations = deviations.merge(df_tmp, on='ideal_col_max')
+    deviations['ideal'] = deviations.loc[deviations['max'] <= deviations['ideal_deviation_max'], 'ideal_col_max']
+    print(deviations)
+
+    df_test = df_test.merge(deviations[['x','max', 'ideal']], on='x')
+  #  df_test['ideal'] = deviations.loc[deviations['max'] <= deviations['ideal_deviation_max'], 'ideal_col_max']
+
     return df_test
