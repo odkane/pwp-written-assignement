@@ -1,9 +1,10 @@
+from dataclasses import fields
 import json
 from sqlalchemy import Engine, insert, delete, select
 from sqlalchemy.orm import Session
 import pandas as pd
 from pandas import DataFrame
-from databases.orm import Base
+from databases.orm import Base, Ideal, Train
 
 
 class DatabaseService:
@@ -35,7 +36,19 @@ class DatabaseService:
     
      
     def get_data(self, table: Base) -> DataFrame:
-        select_stmt = select()
-        return pd.read_sql_query(sql = self.session.query(table).add_columns().statement, con = self.engine)
+        select_stmt = select(table)
+        return pd.read_sql_query(sql = select_stmt, con = self.engine)
     
+     
+    def get_data_from_ideal(self, column: str) -> DataFrame:
+        
+        select_stmt = select(Ideal.x, Ideal.get_field(column))
+        return pd.read_sql_query(sql = select_stmt, con = self.engine)   
+     
+    def get_data_from_train(self, column: str) -> DataFrame:
+        
+        select_stmt = select(Train.x, Train.get_field(column))
+        return pd.read_sql_query(sql = select_stmt, con = self.engine)
+    
+
 
