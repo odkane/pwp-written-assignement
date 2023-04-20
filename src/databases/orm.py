@@ -15,7 +15,7 @@ class Test(Base):
     x: Mapped[float] = mapped_column(Float(), primary_key=True, nullable=False)
     y: Mapped[float] = mapped_column(Float(), nullable=False)
     delta_y: Mapped[float] = mapped_column(Float(), nullable=False)
-    ideal: Mapped[str] = mapped_column(String(), nullable=False)
+    ideal: Mapped[str] = mapped_column(String(3), nullable=False)
 
 
 class Train(Base):

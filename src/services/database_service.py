@@ -4,7 +4,7 @@ from sqlalchemy import Engine, insert, delete, select
 from sqlalchemy.orm import Session
 import pandas as pd
 from pandas import DataFrame
-from databases.orm import Base, Ideal, Train
+from databases.orm import Base, Ideal, Test, Train
 
 
 class DatabaseService:
@@ -17,11 +17,11 @@ class DatabaseService:
         
     def insert_from_file(self, filename:str, table:Base) -> None:
         df = pd.read_csv(rf'src/resources/{filename}')
+        self.insert_from_dataframe(table=table, df=df)
+
+    def insert_from_dataframe(self, table: Base, df: DataFrame) -> None:
         df_as_dict = df.to_dict('records')
- #       print(df.iloc[:20].sort_values('x'))
- #       print(json.dumps(df_as_dict, indent=4))
         self.insert_in_table(table=table, values=df_as_dict)
-        
 
     def insert_in_table(self, table:Base, values) -> None:
         delete_stmt = delete(table)
@@ -34,6 +34,8 @@ class DatabaseService:
     def get_data_from_table(self, table: Base) -> DataFrame:
         return pd.read_sql_query(sql = self.session.query(table).statement, con = self.engine)
     
+    def get_data_from_test_table(self) -> DataFrame:
+        return self.get_data_from_table(Test)
      
     def get_data(self, table: Base) -> DataFrame:
         select_stmt = select(table)

@@ -23,7 +23,7 @@ def find_test_ideal(ideals: list[dict], df_ideals: DataFrame) -> DataFrame:
     deviations = pd.DataFrame()
     ideal_max_deviations = []
     ideals_lst = []
-    deviations['x'] = df_test['x']
+    deviations = df_test
     
     for ideal in ideals:
         ideal_col= ideal.get('ideal')
@@ -44,8 +44,9 @@ def find_test_ideal(ideals: list[dict], df_ideals: DataFrame) -> DataFrame:
     deviations = deviations.merge(df_tmp, on='ideal_col_max')
     deviations['ideal'] = deviations.loc[deviations['max'] <= deviations['ideal_deviation_max'], 'ideal_col_max']
     print(deviations)
-
-    df_test = df_test.merge(deviations[['x','max', 'ideal']], on='x')
+    clean_deviations = deviations.dropna()
+    clean_deviations.set_index('x').sort_index().to_csv('deviations1.csv')
+    # df_test = df_test.merge(clean_deviations[['x','max', 'ideal']],right_on=['x','y'],left_on=['x','y'], how='left')
   #  df_test['ideal'] = deviations.loc[deviations['max'] <= deviations['ideal_deviation_max'], 'ideal_col_max']
 
-    return df_test
+    return clean_deviations[['x','y','max','ideal']].rename(columns={"max":"delta_y"})

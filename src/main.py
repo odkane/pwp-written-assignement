@@ -1,6 +1,5 @@
 import json
 from pathlib import Path
-import pandas as pd
 from databases.database import create_tables
 from sqlalchemy import create_engine
 
@@ -8,7 +7,7 @@ from databases.orm import Ideal, Test, Train
 from services.database_service import DatabaseService
 from services.plotting_service import PlottingService
 from utils.util import find_ideal, find_test_ideal
-from dataclasses import dataclass, fields
+
 
 db_name = 'task_database.db'
 db_path= Path(db_name).absolute()
@@ -31,14 +30,13 @@ if __name__ == '__main__':
         train_ideals[col] = ideal.get('ideal')
     
 
-    # test_result = find_test_ideal(ideals, df_ideals=df_ideal)
-
-    # test_result.to_csv('result.csv')
-    print(ideals)
-    print(json.dumps(train_ideals, indent=4))
-    # print(test_result)
+    df_test_result = find_test_ideal(ideals, df_ideals=df_ideal)
+    
+    db_service.insert_from_dataframe(table=Test, df=df_test_result)
     
     plt_service = PlottingService(engine=engine)
+    plt_service.plot_test()
+    
     for key, value in train_ideals.items():
         plt_service.plot_and_save(train_col= key, ideal_col=value)
 
