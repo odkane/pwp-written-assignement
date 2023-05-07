@@ -132,3 +132,4 @@ pythonsqlite.db
 result.csv
 deviations.csv
 deviations1.csv
+*.DS_Store

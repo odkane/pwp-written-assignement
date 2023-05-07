@@ -1,4 +1,5 @@
 import abc
+import math
 from pandas import DataFrame
 import matplotlib.pyplot as plt
 from sqlalchemy import Engine
@@ -28,17 +29,35 @@ class PlottingService:
 
         ideals = df_test['ideal'].unique()
 
-        fig, axes = plt.subplots(nrows=len(ideals))
+        fig, axes = plt.subplots(nrows=2,ncols=2)
 
         for i, ideal in enumerate(ideals):
             print(str(i) + ideal)
             df :DataFrame = df_test.loc[df_test['ideal'] == ideal]
             df_ideal = self.db_service.get_data_from_ideal(ideal)
-            print(df)
-            df.plot(x='x', y='y',yerr='delta_y', ax=axes[i])
-            df_ideal.plot(x='x', y=ideal, ax=axes[i])
+     #       print(df)
+            x = (i+1)%2
+            y = math.floor((i+1)/3)
+            df.plot.scatter(x='x', y='y',yerr='delta_y', ax=axes[x, y])
+            df_ideal.plot(x='x', y=ideal, ax=axes[x, y])
             
-        plt.show()        
+        plt.show()    
+
+    def plot_test_single(self):
+        df_test = self.db_service.get_data_from_test_table()
+
+        for ideal in df_test['ideal'].unique():
+            df :DataFrame = df_test.loc[df_test['ideal'] == ideal]
+            df_ideal = self.db_service.get_data_from_ideal(ideal)
+     #       print(df)
+            ax = df.plot.scatter(x='x', y='y',yerr='delta_y')
+            df_ideal.plot(x='x', y=ideal, ax=ax)
+        
+            ax.set_xlabel('[x]')
+            ax.set_ylabel('[y]')
+        
+            plt.show()
+
     
 
     @abc.abstractmethod

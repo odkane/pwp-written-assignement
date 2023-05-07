@@ -17,17 +17,22 @@ class DatabaseService:
         
     def insert_from_file(self, filename:str, table:Base) -> None:
         df = pd.read_csv(rf'src/resources/{filename}')
+        self.delete_from_dataframe(table=table)
         self.insert_from_dataframe(table=table, df=df)
 
     def insert_from_dataframe(self, table: Base, df: DataFrame) -> None:
         df_as_dict = df.to_dict('records')
         self.insert_in_table(table=table, values=df_as_dict)
-
-    def insert_in_table(self, table:Base, values) -> None:
+    
+    def delete_from_dataframe(self, table:Base):
         delete_stmt = delete(table)
-        insert_stmt = insert(table).values(values)
         with self.engine.connect() as conn:
             conn.execute(delete_stmt)
+            conn.commit()
+
+    def insert_in_table(self, table:Base, values) -> None:
+        insert_stmt = insert(table).values(values)
+        with self.engine.connect() as conn:
             conn.execute(insert_stmt)
             conn.commit()
 
@@ -52,5 +57,3 @@ class DatabaseService:
         select_stmt = select(Train.x, Train.get_field(column))
         return pd.read_sql_query(sql = select_stmt, con = self.engine)
     
-
-

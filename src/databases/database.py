@@ -36,7 +36,7 @@ def create_table_sql(table_name: str, no_columns: int) -> str:
     columns = ['y{} FLOAT'.format(i+1) for i in range(no_columns)] if no_columns > 1 else ['y FLOAT, delta_y FLOAT, ideal varchar(3)']
     
     return """ CREATE TABLE IF NOT EXISTS {} (
-            x float PRIMARY KEY,
+            x float,
             {}
             ); """.format(table_name, ', '.join(columns))
 
